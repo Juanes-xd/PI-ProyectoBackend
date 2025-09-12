@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nueva Tarea - Gestor de Tareas</title>
+    <link rel="stylesheet" href="../src/css/variables.css">
+    <link rel="stylesheet" href="../src/css/sidebar.css">
+    <link rel="stylesheet" href="../src/css/create-task.css">
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>Task Manager</h2>
+                <div class="user-info" id="userInfo">
+                    Cargando...
+                </div>
+            </div>
+            
+            <div class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item">
+                    <svg class="nav-icon" viewBox="0 0 24 24">
+                        <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                    Dashboard
+                </a>
+                <a href="create-task.html" class="nav-item active">
+                    <svg class="nav-icon" viewBox="0 0 24 24">
+                        <path d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    Nueva Tarea
+                </a>
+            </div>
+            
+            <div class="sidebar-footer">
+                <button id="logout-btn" class="logout-btn">
+                    <svg class="nav-icon" viewBox="0 0 24 24">
+                        <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                    </svg>
+                    Cerrar Sesión
+                </button>
+            </div>
+        </nav>
+
+        <!-- Mobile menu button -->
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+            <svg class="nav-icon" viewBox="0 0 24 24">
+                <path d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+        </button>
+
+        <!-- Sidebar overlay for mobile -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <!-- Main content -->
+        <main class="main-content">
+            <div class="create-task-container">
+                <header class="create-task-header">
+                    <h1>Nueva Tarea</h1>
+                </header>
+
+                <form id="task-form" class="create-task-form">
+                    <div class="form-group">
+                        <label for="task-title">Título de la tarea *</label>
+                        <input type="text" id="task-title" name="title" required maxlength="50" 
+                               placeholder="Escribe el título de tu tarea">
+                        <small class="char-counter">0/50 caracteres</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="task-details">Descripción detallada</label>
+                        <textarea id="task-details" name="details" maxlength="500" rows="5" 
+                                  placeholder="Describe los detalles de tu tarea (opcional)"></textarea>
+                        <small class="char-counter">0/500 caracteres</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="task-status">Estado inicial</label>
+                        <select id="task-status" name="status">
+                            <option value="Por Hacer">Por Hacer</option>
+                            <option value="Haciendo">Haciendo</option>
+                            <option value="Hecho">Hecho</option>
+                        </select>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" id="cancel-btn" class="btn btn-secondary">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            Crear Tarea
+                        </button>
+                    </div>
+                </form>
+
+                <div id="task-error" class="error-message"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="success-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h3>¡Tarea creada exitosamente!</h3>
+            <p>Tu tarea ha sido creada y guardada correctamente.</p>
+            <div class="modal-actions">
+                <button id="go-dashboard" class="btn btn-primary">Ver en Dashboard</button>
+                <button id="create-another" class="btn btn-secondary">Crear otra tarea</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../src/js/services/api.js"></script>
+    <script src="../src/js/utils/utils.js"></script>
+    <script src="../src/js/utils/sidebar.js"></script>
+    <script src="../src/js/create-task.js"></script>
+</body>
+</html>

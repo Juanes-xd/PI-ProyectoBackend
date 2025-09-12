@@ -1,10 +1,7 @@
+// API Service para comunicación con el backend
 const API_BASE_URL = 'http://localhost:4000/api/v1';
 
-class ApiService {
-  constructor() {
-    // No necesitamos manejar tokens en localStorage ya que el backend usa cookies httpOnly
-  }
-
+const ApiService = {
   async request(endpoint, options = {}) {
     const url = `${API_BASE_URL}${endpoint}`;
     const config = {
@@ -12,14 +9,18 @@ class ApiService {
         'Content-Type': 'application/json',
         ...options.headers,
       },
-      credentials: 'include', // Importante: incluir cookies en las peticiones
+      credentials: 'include', // Incluir cookies
       ...options,
     };
+
+    console.log('API Request:', url, config); // Debug log
 
     try {
       const response = await fetch(url, config);
       
-      // Si la respuesta es de tipo text, la parseamos como texto
+      console.log('API Response status:', response.status); // Debug log
+      
+      // Manejar diferentes tipos de respuesta
       const contentType = response.headers.get('content-type');
       let data;
       
@@ -29,8 +30,10 @@ class ApiService {
         data = await response.text();
       }
 
+      console.log('API Response data:', data); // Debug log
+
       if (!response.ok) {
-        throw new Error(data.message || data || 'Error en la petición');
+        throw new Error(data.message || data || `HTTP Error ${response.status}`);
       }
 
       return data;
@@ -38,33 +41,30 @@ class ApiService {
       console.error('API Error:', error);
       throw error;
     }
-  }
+  },
 
-  // Auth methods
+  // Métodos de autenticación
   async register(userData) {
-    // El backend espera name y lastname, no firstName y lastName
     const requestData = {
       name: userData.firstName,
       lastname: userData.lastName,
       email: userData.email,
       password: userData.password,
-      age: userData.age || 18 // Valor por defecto ya que el backend lo requiere
+      age: userData.age || 18
     };
     
-    const response = await this.request('/register', {
+    return await this.request('/register', {
       method: 'POST',
       body: JSON.stringify(requestData),
     });
-    return response;
-  }
+  },
 
   async login(credentials) {
-    const response = await this.request('/login', {
+    return await this.request('/login', {
       method: 'POST',
       body: JSON.stringify(credentials),
     });
-    return response;
-  }
+  },
 
   async logout() {
     try {
@@ -72,38 +72,29 @@ class ApiService {
     } catch (error) {
       console.log('Logout error:', error);
     }
-  }
+  },
 
   async verifyToken() {
     return await this.request('/verify');
-  }
+  },
 
   async getProfile() {
     return await this.request('/profile');
-  }
+  },
 
-  // Task methods
+  // Métodos de tareas
   async getTasks() {
     return await this.request('/tasks');
-  }
+  },
 
   async createTask(taskData) {
     return await this.request('/tasks/new', {
       method: 'POST',
       body: JSON.stringify(taskData),
     });
-  }
+  },
 
   async getTask(id) {
     return await this.request(`/tasks/${id}`);
   }
-
-  // Token management - ya no necesitamos estos métodos con cookies httpOnly
-  isAuthenticated() {
-    // Con cookies httpOnly no podemos verificar desde el cliente
-    // Necesitamos hacer una petición al servidor
-    return true; // Siempre devolvemos true y dejamos que verifyToken maneje la lógica
-  }
-}
-
-export default new ApiService();
+};

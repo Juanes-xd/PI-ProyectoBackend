@@ -42,7 +42,7 @@ export const registerUser = async (req, res) => {
       age: savedUser.age,
     });
   } catch (error) {
-    res.sendStatus(500).json(["Intenta de nuevo más tarde"]);
+    res.status(500).json(["Intenta de nuevo más tarde"]);
   }
 };
 
@@ -65,7 +65,7 @@ export const loginUser = async (req, res) => {
     const isMatch = await bcrypt.compare(password, userFound.password);
     if (!isMatch)
       return res
-        .sendStatus(401)
+        .status(401)
         .json({ message: "Correo o contraseña inválidos" });
 
     const token = await createAccessToken({ id: userFound._id });
@@ -84,7 +84,7 @@ export const loginUser = async (req, res) => {
       updatedAt: userFound.updatedAt,
     });
   } catch (error) {
-    res.sendStatus(500).json({ message: "Intenta de nuevo más tarde" });
+    res.status(500).json({ message: "Intenta de nuevo más tarde" });
   }
 };
 
@@ -93,10 +93,10 @@ export const verifyToken = async (req, res) => {
   if (!token) return res.send(false);
 
   jwt.verify(token, process.env.TOKEN_SECRET, async (error, user) => {
-    if (error) return res.sendStatus(401);
+    if (error) return res.status(401).json({ message: "Token inválido" });
 
     const userFound = await User.findById(user.id);
-    if (!userFound) return res.sendStatus(401).json({ message: "Usuario no encontrado" });
+    if (!userFound) return res.status(401).json({ message: "Usuario no encontrado" });
 
     return res.json({
       id: userFound._id,
@@ -111,7 +111,7 @@ export const verifyToken = async (req, res) => {
 export const profile = async (req, res) => {
   const userFound = await User.findById(req.user.id);
   if (!userFound)
-    return res.sendStatus(400).json({ message: "Usuario no encontrado" });
+    return res.status(400).json({ message: "Usuario no encontrado" });
 
   return res.json({
     id: userFound._id,
@@ -185,7 +185,7 @@ export const resetPassword = async (req, res) => {
   try {
     payload = jwt.verify(token, process.env.TOKEN_SECRET);
   } catch {
-    return res.sendStatus(400).json({ message: "Enlace inválido o caducado" });
+    return res.status(400).json({ message: "Enlace inválido o caducado" });
   }
 
   // Busca el usuario con ese token y que no haya expirado
@@ -195,7 +195,7 @@ export const resetPassword = async (req, res) => {
     resetPasswordExpires: { $gt: Date.now() },
   });
   if (!user) {
-    return res.sendStatus(400).json({ message: "Enlace inválido o caducado" });
+    return res.status(400).json({ message: "Enlace inválido o caducado" });
   }
 
   user.password = await bcrypt.hash(password, 10);

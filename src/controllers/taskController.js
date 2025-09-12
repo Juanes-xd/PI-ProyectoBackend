@@ -35,12 +35,13 @@ export const createTask = async (req, res) => {
     const newTask = new Task({
       title,
       details,
+      status,
       user: req.user.id,
     });
     await newTask.save();
-    res.sendStatus(201).json(newTask);
+    res.status(201).json(newTask);
   } catch (error) {
-    return res.sendStatus(500).json({ message: "No pudimos crear tu tarea" });
+    return res.status(500).json({ message: "No pudimos crear tu tarea" });
   }
 };
 
@@ -57,11 +58,11 @@ export const deleteTask = async (req, res) => {
   try {
     const deletedTask = await Task.findByIdAndDelete(req.params.id);
     if (!deletedTask)
-      return res.sendStatus(404).json({ message: "Task not found" });
+      return res.status(404).json({ message: "Task not found" });
 
     return res.sendStatus(204);
   } catch (error) {
-    return res.sendStatus(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -84,7 +85,7 @@ export const updateTask = async (req, res) => {
     );
     return res.json(taskUpdated);
   } catch (error) {
-    return res.sendStatus(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 

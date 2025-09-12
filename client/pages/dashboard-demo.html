@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Demo - Dashboard con Sidebar</title>
+    <link rel="stylesheet" href="../src/css/variables.css">
+    <link rel="stylesheet" href="../src/css/sidebar.css">
+    <link rel="stylesheet" href="../src/css/dashboard.css">
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>Task Manager</h2>
+                <div class="user-info">
+                    ¡Hola, Usuario Demo!
+                </div>
+            </div>
+            
+            <div class="sidebar-nav">
+                <a href="#" class="nav-item active">
+                    <svg class="nav-icon" viewBox="0 0 24 24">
+                        <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                    Dashboard
+                </a>
+                <a href="create-task-demo.html" class="nav-item">
+                    <svg class="nav-icon" viewBox="0 0 24 24">
+                        <path d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    Nueva Tarea
+                </a>
+            </div>
+            
+            <div class="sidebar-footer">
+                <button class="logout-btn" onclick="alert('Demo - Logout functionality')">
+                    <svg class="nav-icon" viewBox="0 0 24 24">
+                        <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                    </svg>
+                    Cerrar Sesión
+                </button>
+            </div>
+        </nav>
+
+        <!-- Mobile menu button -->
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+            <svg class="nav-icon" viewBox="0 0 24 24">
+                <path d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+        </button>
+
+        <!-- Sidebar overlay for mobile -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <!-- Main content -->
+        <main class="main-content">
+            <div class="dashboard">
+                <header class="dashboard-header">
+                    <h1>Mis Tareas - Demo</h1>
+                </header>
+
+                <div class="tasks-container">
+                    <div class="tasks-filter">
+                        <button class="filter-btn active">Todas</button>
+                        <button class="filter-btn">Por Hacer</button>
+                        <button class="filter-btn">Haciendo</button>
+                        <button class="filter-btn">Hecho</button>
+                    </div>
+                    
+                    <div class="tasks-list">
+                        <!-- Tarea 1 -->
+                        <div class="task-item">
+                            <div class="task-header">
+                                <h3 class="task-title">Primera tarea</h3>
+                                <div class="task-actions">
+                                    <button class="btn-icon toggle-status" title="Marcar como completada">✓</button>
+                                    <button class="btn-icon edit-task" title="Editar tarea">✏️</button>
+                                    <button class="btn-icon delete-task" title="Eliminar tarea">🗑️</button>
+                                </div>
+                            </div>
+                            <p class="task-description">Quiero comer</p>
+                            <div class="task-meta">
+                                <span class="task-date">Creada: 11/9/2025</span>
+                                <span class="task-status pending">Por Hacer</span>
+                            </div>
+                        </div>
+
+                        <!-- Tarea 2 -->
+                        <div class="task-item">
+                            <div class="task-header">
+                                <h3 class="task-title">Segunda tarea</h3>
+                                <div class="task-actions">
+                                    <button class="btn-icon toggle-status" title="Marcar como completada">✓</button>
+                                    <button class="btn-icon edit-task" title="Editar tarea">✏️</button>
+                                    <button class="btn-icon delete-task" title="Eliminar tarea">🗑️</button>
+                                </div>
+                            </div>
+                            <p class="task-description">Quiero dormir</p>
+                            <div class="task-meta">
+                                <span class="task-date">Creada: 11/9/2025</span>
+                                <span class="task-status pending">Por Hacer</span>
+                            </div>
+                        </div>
+
+                        <!-- Tarea 3 -->
+                        <div class="task-item completed">
+                            <div class="task-header">
+                                <h3 class="task-title completed">Tarea final</h3>
+                                <div class="task-actions">
+                                    <button class="btn-icon toggle-status" title="Marcar como pendiente">↶</button>
+                                    <button class="btn-icon edit-task" title="Editar tarea">✏️</button>
+                                    <button class="btn-icon delete-task" title="Eliminar tarea">🗑️</button>
+                                </div>
+                            </div>
+                            <p class="task-description">Desplegar el backend en render</p>
+                            <div class="task-meta">
+                                <span class="task-date">Creada: 11/9/2025</span>
+                                <span class="task-status completed">Hecho</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Mobile menu functionality
+        document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('mobile-open');
+            overlay.classList.toggle('active');
+        });
+
+        document.getElementById('sidebarOverlay').addEventListener('click', function() {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.remove('mobile-open');
+            overlay.classList.remove('active');
+        });
+
+        // Demo button interactions
+        document.querySelectorAll('.btn-icon').forEach(btn => {
+            btn.addEventListener('click', function() {
+                alert('Demo - ' + this.title);
+            });
+        });
+
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

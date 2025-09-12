@@ -1,44 +1,62 @@
-import './style.css'
-import { AuthComponent } from './components/AuthComponent.js'
-import { TaskDashboard } from './components/TaskDashboard.js'
-import apiService from './services/api.js'
-
-class App {
-  constructor() {
-    this.container = document.querySelector('#app');
-    this.authComponent = new AuthComponent(this.container);
-    this.taskDashboard = new TaskDashboard(this.container);
-    this.init();
-  }
-
+// Aplicación principal
+const App = {
   async init() {
-    // Check if user is already authenticated by trying to verify token from cookies
+    // Mostrar pantalla de carga
+    this.showLoading();
+    
+    // Inicializar componentes
+    AuthManager.init();
+    
+    // Verificar si hay autenticación existente
     try {
-      await apiService.verifyToken();
-      this.showDashboard();
+      const user = await ApiService.verifyToken();
+      this.showDashboard(user);
     } catch (error) {
-      console.log('No valid authentication found');
+      console.log('No hay autenticación válida');
       this.showAuth();
     }
+  },
 
-    // Listen for authentication events
-    window.addEventListener('auth-success', () => {
-      this.showDashboard();
-    });
-
-    window.addEventListener('auth-logout', () => {
-      this.showAuth();
-    });
-  }
+  showLoading() {
+    this.hideAllScreens();
+    document.getElementById('loading-screen').style.display = 'flex';
+  },
 
   showAuth() {
-    this.authComponent.render();
-  }
+    this.hideAllScreens();
+    document.getElementById('auth-screen').style.display = 'block';
+  },
 
-  async showDashboard() {
-    await this.taskDashboard.init();
-  }
-}
+  async showDashboard(user) {
+    this.hideAllScreens();
+    
+    // Obtener perfil actualizado si no se proporcionó
+    if (!user) {
+      try {
+        user = await ApiService.getProfile();
+      } catch (error) {
+        console.error('Error obteniendo perfil:', error);
+        this.showAuth();
+        return;
+      }
+    }
+    
+    // Inicializar TaskManager con el usuario
+    TaskManager.init(user);
+    TaskManager.updateUserGreeting();
+    
+    document.getElementById('dashboard-screen').style.display = 'block';
+  },
 
-// Initialize the app
-new App();
+  hideAllScreens() {
+    const screens = document.querySelectorAll('.screen');
+    screens.forEach(screen => {
+      screen.style.display = 'none';
+    });
+  }
+};
+
+// Inicializar la aplicación cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', () => {
+  App.init();
+});
