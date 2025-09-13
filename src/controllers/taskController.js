@@ -31,16 +31,27 @@ export const getTasks = async (req, res) => {
 
 export const createTask = async (req, res) => {
   try {
-    const { title, details } = req.body;
+    const { title, details, status = "Por Hacer" } = req.body;
+    
+    console.log('Received task data:', req.body); // Para debugging
+    console.log('User ID:', req.user.id); // Para debugging
+    
+    if (!title || !title.trim()) {
+      return res.status(400).json({ message: "El título es obligatorio" });
+    }
+    
     const newTask = new Task({
-      title,
-      details,
+      title: title.trim(),
+      details: details ? details.trim() : '',
       status,
       user: req.user.id,
     });
-    await newTask.save();
-    res.status(201).json(newTask);
+    
+    const savedTask = await newTask.save();
+    console.log('Task created successfully:', savedTask); // Para debugging
+    res.status(201).json(savedTask);
   } catch (error) {
+    console.error('Error creating task:', error); // Para debugging
     return res.status(500).json({ message: "No pudimos crear tu tarea" });
   }
 };

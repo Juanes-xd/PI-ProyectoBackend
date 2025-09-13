@@ -162,6 +162,33 @@
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
 }
 
+/* Estilos para mensajes de error por campo */
+.field-error {
+  color: var(--danger-color);
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  min-height: 1rem;
+  opacity: 0;
+  transform: translateY(-5px);
+  transition: all 0.3s ease;
+}
+
+.field-error.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.form-group input:focus.error + .field-error {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Estilo para input válido */
+.form-group input.valid {
+  border-color: var(--success-color, #10b981);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
 .error-message {
   color: var(--danger-color);
   font-size: 0.875rem;
@@ -284,6 +311,15 @@
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
+  opacity: 0.6;
+}
+
+.btn-primary.disabled {
+  background: var(--text-light);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+  opacity: 0.6;
 }
 
 /* Estilo para el enlace de cambio de modo */

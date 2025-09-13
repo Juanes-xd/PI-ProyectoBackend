@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         tasks: [],
         user: null,
         currentFilter: 'all',
+        currentView: 'kanban', // Vista por defecto Kanban
 
         async init() {
             // Verificar autenticación
@@ -30,7 +31,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         updateUserGreeting() {
             const greeting = document.getElementById('user-greeting');
             if (greeting && this.user) {
-                greeting.textContent = `¡Hola, ${this.user.username || this.user.email}!`;
+                const name = this.user.name || this.user.username || this.user.email.split('@')[0];
+                greeting.textContent = `¡Hola, ${name}!`;
             }
         },
 
@@ -47,10 +49,40 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         bindEvents() {
             const filterBtns = document.querySelectorAll('.filter-btn');
+            const viewBtns = document.querySelectorAll('.view-btn');
             
             filterBtns.forEach(btn => {
                 btn.addEventListener('click', (e) => this.handleFilter(e));
             });
+            
+            viewBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => this.handleViewChange(e));
+            });
+        },
+
+        handleViewChange(e) {
+            const view = e.target.closest('.view-btn').dataset.view;
+            this.currentView = view;
+            
+            // Actualizar botones activos
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            e.target.closest('.view-btn').classList.add('active');
+            
+            // Mostrar/ocultar vistas
+            const kanbanView = document.getElementById('kanban-view');
+            const listView = document.getElementById('list-view');
+            
+            if (view === 'kanban') {
+                kanbanView.style.display = 'grid';
+                listView.style.display = 'none';
+            } else {
+                kanbanView.style.display = 'none';
+                listView.style.display = 'block';
+            }
+            
+            this.renderTasks();
         },
 
         handleFilter(e) {
@@ -74,7 +106,47 @@ document.addEventListener('DOMContentLoaded', async () => {
         },
 
         renderTasks() {
-            const tasksContainer = document.getElementById('tasks-grid');
+            if (this.currentView === 'kanban') {
+                this.renderKanbanView();
+            } else {
+                this.renderListView();
+            }
+        },
+
+        renderKanbanView() {
+            const statuses = ['Por Hacer', 'Haciendo', 'Hecho'];
+            
+            statuses.forEach(status => {
+                const column = document.querySelector(`[data-status="${status}"] .column-tasks`);
+                const countElement = document.querySelector(`[data-status="${status}"] .task-count`);
+                
+                let tasksForStatus = this.tasks.filter(task => task.status === status);
+                
+                // Aplicar filtro si no es "all"
+                if (this.currentFilter !== 'all') {
+                    tasksForStatus = tasksForStatus.filter(task => task.status === this.currentFilter);
+                }
+                
+                // Actualizar contador
+                countElement.textContent = tasksForStatus.length;
+                
+                // Renderizar tareas
+                if (tasksForStatus.length === 0) {
+                    column.innerHTML = `
+                        <div class="kanban-empty">
+                            <p>No hay tareas en ${status}</p>
+                        </div>
+                    `;
+                } else {
+                    column.innerHTML = tasksForStatus.map(task => this.createKanbanTaskHTML(task)).join('');
+                }
+            });
+            
+            this.bindTaskEvents();
+        },
+
+        renderListView() {
+            const tasksContainer = document.getElementById('list-view');
             const filteredTasks = this.getFilteredTasks();
             
             if (filteredTasks.length === 0) {
@@ -82,8 +154,26 @@ document.addEventListener('DOMContentLoaded', async () => {
                 return;
             }
             
-            tasksContainer.innerHTML = filteredTasks.map(task => this.createTaskHTML(task)).join('');
+            // Ordenar por fecha ascendente
+            const sortedTasks = filteredTasks.sort((a, b) => new Date(a.fechaLimite) - new Date(b.fechaLimite));
+            
+            tasksContainer.innerHTML = sortedTasks.map(task => this.createTaskHTML(task)).join('');
             this.bindTaskEvents();
+        },
+
+        createKanbanTaskHTML(task) {
+            const date = new Date(task.createdAt || task.updatedAt).toLocaleDateString('es-ES');
+            
+            return `
+                <div class="kanban-task" data-task-id="${task._id}">
+                    <div class="kanban-task-title">${task.title}</div>
+                    <div class="kanban-task-description">${task.details || 'Sin descripción'}</div>
+                    <div class="kanban-task-meta">
+                        <span class="kanban-task-date">${date}</span>
+                        <span class="kanban-task-status">${task.status}</span>
+                    </div>
+                </div>
+            `;
         },
 
         getEmptyStateHTML() {

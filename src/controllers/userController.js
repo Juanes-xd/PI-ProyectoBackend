@@ -34,12 +34,23 @@ export const registerUser = async (req, res) => {
     });
 
     const savedUser = await newUser.save();
+    
+    // Generar token automáticamente después del registro
+    const token = await createAccessToken({ id: savedUser._id });
+
+    // Establecer cookie con el token
+    res.cookie("token", token, {
+      httpOnly: true,
+    });
+
     res.status(201).json({
       id: savedUser._id,
       email: savedUser.email,
       name: savedUser.name,
       lastname: savedUser.lastname,
       age: savedUser.age,
+      createdAt: savedUser.createdAt,
+      updatedAt: savedUser.updatedAt,
     });
   } catch (error) {
     res.status(500).json(["Intenta de nuevo más tarde"]);

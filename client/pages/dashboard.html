@@ -62,14 +62,59 @@
                 </header>
 
                 <div class="tasks-container">
-                    <div class="tasks-filter">
-                        <button class="filter-btn active" data-filter="all">Todas</button>
-                        <button class="filter-btn" data-filter="Por Hacer">Por Hacer</button>
-                        <button class="filter-btn" data-filter="Haciendo">Haciendo</button>
-                        <button class="filter-btn" data-filter="Hecho">Hecho</button>
+                    <div class="tasks-header">
+                        <div class="tasks-filter">
+                            <button class="filter-btn active" data-filter="all">Todas</button>
+                            <button class="filter-btn" data-filter="Por Hacer">Por Hacer</button>
+                            <button class="filter-btn" data-filter="Haciendo">Haciendo</button>
+                            <button class="filter-btn" data-filter="Hecho">Hecho</button>
+                        </div>
+                        
+                        <div class="view-toggle">
+                            <button class="view-btn active" data-view="kanban">
+                                <svg class="view-icon" viewBox="0 0 24 24">
+                                    <path d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                                </svg>
+                                Kanban
+                            </button>
+                            <button class="view-btn" data-view="list">
+                                <svg class="view-icon" viewBox="0 0 24 24">
+                                    <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"></path>
+                                </svg>
+                                Lista
+                            </button>
+                        </div>
                     </div>
                     
-                    <div id="tasks-grid" class="tasks-list">
+                    <!-- Vista Kanban -->
+                    <div id="kanban-view" class="kanban-board">
+                        <div class="kanban-column" data-status="Por Hacer">
+                            <div class="column-header">
+                                <h3>Por Hacer</h3>
+                                <span class="task-count">0</span>
+                            </div>
+                            <div class="column-tasks" data-status="Por Hacer"></div>
+                        </div>
+                        
+                        <div class="kanban-column" data-status="Haciendo">
+                            <div class="column-header">
+                                <h3>Haciendo</h3>
+                                <span class="task-count">0</span>
+                            </div>
+                            <div class="column-tasks" data-status="Haciendo"></div>
+                        </div>
+                        
+                        <div class="kanban-column" data-status="Hecho">
+                            <div class="column-header">
+                                <h3>Hecho</h3>
+                                <span class="task-count">0</span>
+                            </div>
+                            <div class="column-tasks" data-status="Hecho"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Vista Lista -->
+                    <div id="list-view" class="tasks-list" style="display: none;">
                         <div class="empty-state">
                             <h3>No tienes tareas aún</h3>
                             <p>¡Crea tu primera tarea para comenzar!</p>
